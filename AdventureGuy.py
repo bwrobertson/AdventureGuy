@@ -6,38 +6,44 @@ class App:
         self.x = pyxel.width/2
         self.y = pyxel.height/2
         self.music= Music()
-        self.border = Border()
         self.cave = Cave()
-        self.pond = Pond()
-        self.glimmer = 0
+        self.ocean = Ocean()
+        self.glimmer = Glimmer()
+        self.Fish = Fish()
+        self.bell = False
         self.cat = False
         self.fish = False
         pyxel.run(self.update, self.draw)
 
     def update(self):
         if pyxel.btnp(pyxel.KEY_RIGHT):
-            if(self.x+5==pyxel.width):
+            if(self.x+5>=pyxel.width-11):
                 self.music.sfx_move()
             else:
                 self.x = (self.x + 5) % pyxel.width
         if pyxel.btnp(pyxel.KEY_LEFT):
-            if(self.x-5==0):
+            if(self.x-5<=0):
                 self.music.sfx_move()
             else:
                 self.x = (self.x - 5) % pyxel.width
         if pyxel.btnp(pyxel.KEY_UP):
-            if(self.y-5==0):
+            if(self.y-5<=0):
                 self.music.sfx_move()
             else:
                 self.y = (self.y - 5) % pyxel.height
         if pyxel.btnp(pyxel.KEY_DOWN):
-            if(self.y+5==pyxel.height):
+            if(self.y+5>=pyxel.height):
                 self.music.sfx_move()
             else:
                 self.y = (self.y + 5) % pyxel.height
+        if pyxel.btnp(pyxel.KEY_SPACE):
+            if(self.x>=pyxel.width-15):
+                self.fish=True
+                self.music.sfx_item()
 
     def draw(self):
-        self.border.drawBorder()
+        pyxel.cls(col=3)
+        #pyxel.text(pyxel.width/2, 0, "Hi", 0)
         pyxel.circ(self.x, self.y, 2, 6) #head
         pyxel.rect(self.x - 1, self.y, self.x + 1, self.y + 5, 15)#face
         pyxel.pix(self.x-1, self.y, 0)#rEye
@@ -46,13 +52,10 @@ class App:
         pyxel.rect(self.x - 1, self.y+2, self.x + 1, self.y + 5, 6)#body
         pyxel.rect(self.x - 2, self.y+5, self.x + 2, self.y + 5, 4)#feet
         self.cave.drawCave()
-        self.pond.drawPond()
-        if(self.glimmer==100):
-            pyxel.pix(30,pyxel.height-20, 7)
-            self.glimmer=0
-        else:
-            pyxel.pix(30,pyxel.height-20, 3)
-            self.glimmer+=1
+        self.ocean.drawOcean()
+        self.glimmer.drawGlimmer()
+        if(self.fish==True):
+            self.Fish.caughtFish()
 
 class Music:
     def __init__(self):
@@ -60,17 +63,25 @@ class Music:
         # Sound effects
         pyxel.sound(0).set(
             note="c1", tone="s", volume="4", effect=("n" * 4 + "f"), speed=7)
+        pyxel.sound(1).set(
+            note="d3f3d4", tone="s", volume="4", effect=("n" * 4 + "f"), speed=10)
 
     def sfx_move(self):
         pyxel.play(ch=0, snd=0)
 
-class Border:
-    def drawBorder(self):
-        pyxel.cls(col=3)
-        pyxel.rect(0, 0, 2, pyxel.height, 1)
-        pyxel.rect(0, 0, pyxel.width, 2, 1)
-        pyxel.rect(pyxel.width,pyxel.height, pyxel.width-2, 0, 1)
-        pyxel.rect(pyxel.width, pyxel.height, 0, pyxel.height-2, 1)
+    def sfx_item(selfs):
+        pyxel.play(ch=1, snd=1)
+
+class Fish:
+    def __init__(self):
+        self.count = 0
+    def caughtFish(self):
+        if(self.count<200):
+            pyxel.rect(40,40,120,65, 7)
+            pyxel.rectb(40,40,120,65,0)
+            pyxel.text(44,45, "You've obtained the", 0)
+            pyxel.text(44,55 ,"catch of the day!", 0)
+            self.count+=1
 
 class Cave:
     def drawCave(self):
@@ -81,11 +92,37 @@ class Cave:
         pyxel.rect(14,16,16,20,0) #opening middle
         pyxel.rect(12,18,18,20,0) #opening bottom
 
-class Pond:
-    def drawPond(self):
-        pyxel.circ(pyxel.width-20, pyxel.height-20, 10, 12) #main pond
-        pyxel.circb(pyxel.width-20, pyxel.height-20, 9, 7)
-        pyxel.circb(pyxel.width - 20, pyxel.height - 20, 6, 7)
-        pyxel.circb(pyxel.width - 20, pyxel.height - 20, 3, 7)
+class Ocean:
+    def __init__(self):
+        self.count = 0
 
+    def drawOcean(self):
+        pyxel.rect(pyxel.width, pyxel.height, pyxel.width - 10, 0, 12)#Ocean
+        pyxel.rect(pyxel.width-11, pyxel.height, pyxel.width-13, 0, 10)
+        if(self.count<30):
+            pyxel.line(pyxel.width-10, pyxel.height, pyxel.width-10, 0, 7)
+            pyxel.line(pyxel.width - 3, pyxel.height, pyxel.width - 3, 0, 7)
+            self.count+=1
+        elif(self.count<60):
+            pyxel.line(pyxel.width - 6, pyxel.height, pyxel.width - 6, 0, 7)
+            pyxel.line(pyxel.width, pyxel.height, pyxel.width, 0, 7)
+
+            self.count+=1
+        elif (self.count < 90):
+            pyxel.line(pyxel.width-8, pyxel.height, pyxel.width-8, 0, 7)
+            pyxel.line(pyxel.width - 2, pyxel.height, pyxel.width - 2, 0, 7)
+            self.count += 1
+        else:
+            self.count=0
+
+class Glimmer:
+    def __init__(self):
+        self.count = 0
+    def drawGlimmer(self):
+        if (self.count == 100):
+            pyxel.pix(30, pyxel.height - 20, 7)
+            self.count = 0
+        else:
+            pyxel.pix(30, pyxel.height - 20, 3)
+            self.count += 1
 App()
