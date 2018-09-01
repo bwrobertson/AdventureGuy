@@ -10,6 +10,7 @@ class App:
         self.ocean = Ocean()
         self.glimmer = Glimmer()
         self.Fish = Fish()
+        self.Bell = Bell()
         self.bell = False
         self.cat = False
         self.fish = False
@@ -40,6 +41,9 @@ class App:
             if(self.x>=pyxel.width-15):
                 self.fish=True
                 self.music.sfx_item()
+            if(25<self.x<35 and (pyxel.height-25)<self.y<(pyxel.height-15)):
+                self.bell=True
+                self.music.sfx_item()
 
     def draw(self):
         pyxel.cls(col=3)
@@ -53,7 +57,10 @@ class App:
         pyxel.rect(self.x - 2, self.y+5, self.x + 2, self.y + 5, 4)#feet
         self.cave.drawCave()
         self.ocean.drawOcean()
-        self.glimmer.drawGlimmer()
+        if(self.bell==False):
+            self.glimmer.drawGlimmer()
+        if(self.bell==True):
+            self.Bell.foundBell()
         if(self.fish==True):
             self.Fish.caughtFish()
 
@@ -125,4 +132,15 @@ class Glimmer:
         else:
             pyxel.pix(30, pyxel.height - 20, 3)
             self.count += 1
+
+class Bell:
+    def __init__(self):
+        self.count = 0
+    def foundBell(self):
+        if(self.count<200):
+            pyxel.rect(40,40,120,65, 7)
+            pyxel.rectb(40,40,120,65,0)
+            pyxel.text(44,45, "You've obtained the", 0)
+            pyxel.text(50,55 ,"Bell of Jingles!", 0)
+            self.count+=1
 App()
