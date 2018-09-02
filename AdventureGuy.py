@@ -20,20 +20,28 @@ class App:
         if pyxel.btnp(pyxel.KEY_RIGHT):
             if(self.x+5>=pyxel.width-11):
                 self.music.sfx_move()
+            elif(5<=self.x+5<=25 and 10<=self.y<=20):
+                self.music.sfx_move()
             else:
                 self.x = (self.x + 5) % pyxel.width
         if pyxel.btnp(pyxel.KEY_LEFT):
             if(self.x-5<=0):
+                self.music.sfx_move()
+            elif(5<=self.x-5<=25 and 10<=self.y<=20):
                 self.music.sfx_move()
             else:
                 self.x = (self.x - 5) % pyxel.width
         if pyxel.btnp(pyxel.KEY_UP):
             if(self.y-5<=0):
                 self.music.sfx_move()
+            elif (5 <= self.x <= 25 and 10 <= self.y-5 <= 20):
+                self.music.sfx_move()
             else:
                 self.y = (self.y - 5) % pyxel.height
         if pyxel.btnp(pyxel.KEY_DOWN):
             if(self.y+5>=pyxel.height):
+                self.music.sfx_move()
+            elif (5 <= self.x <= 25 and 10 <= self.y+5 <= 20):
                 self.music.sfx_move()
             else:
                 self.y = (self.y + 5) % pyxel.height
